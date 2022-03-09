@@ -7,7 +7,8 @@ using UnityEngine;
 
 public class MeshCreator: MonoBehaviour
 {
-    [SerializeField] private MeshFilter meshFilter;
+    [SerializeField] private MeshFilter _meshFilter;
+    [SerializeField] private MeshCollider _meshCollider;
     private Mesh _mesh;
     private Vector3[] _vertices;
     [SerializeField] private List<Transform> _verticesList;
@@ -19,7 +20,7 @@ public class MeshCreator: MonoBehaviour
     public void CreateVertex()
     {
         _mesh = new Mesh();
-        meshFilter.mesh = _mesh;
+        _meshFilter.mesh = _mesh;
 
         _vertices = new Vector3[]
         {
@@ -51,7 +52,8 @@ public class MeshCreator: MonoBehaviour
         _mesh.Clear();
         _mesh.vertices = _vertices;
         _mesh.triangles = _triangles;
-        meshFilter.mesh = _mesh;
+        _meshFilter.mesh = _mesh;
+        _meshCollider.sharedMesh = _mesh;
     }
 
     private void SynchronizeTriangles()
@@ -67,8 +69,8 @@ public class MeshCreator: MonoBehaviour
             triangleList.Add(i + 2);
         }
         _triangles = triangleList.ToArray();
-        Debug.Log("triangles count: " + _triangles.Length);
-        DebugTriangles();
+        //Debug.Log("triangles count: " + _triangles.Length);
+        //DebugTriangles();
     }
 
     private void DebugTriangles()
@@ -81,18 +83,15 @@ public class MeshCreator: MonoBehaviour
 
     private void SynchronizeVerticesPosition()
     {
-        Debug.Log("vertices count: " + _verticesList.Count);
+        //Debug.Log("vertices count: " + _verticesList.Count);
         // add vertex position into vertices array
-        if (_verticesList.Count >= 3)
+        List<Vector3> verticesList = new List<Vector3>();
+        for (int i = 0; i < _verticesList.Count; i++)
         {
-            List<Vector3> verticesList = new List<Vector3>();
-            for (int i = 0; i < _verticesList.Count; i++)
-            {
-                verticesList.Add(_verticesList[i].TransformPoint(Vector3.zero) - transform.position);
-            }
-            _vertices = verticesList.ToArray();
-            DebugVertices();
+            verticesList.Add(_verticesList[i].TransformPoint(Vector3.zero) - transform.position);
         }
+        _vertices = verticesList.ToArray();
+        //DebugVertices();
     }
 
     private void DebugVertices()
@@ -111,6 +110,8 @@ public class MeshCreator: MonoBehaviour
     private Transform GenerateNewVertex()
     {
         Transform newVertex = new GameObject().transform;
+        newVertex.gameObject.AddComponent<VertexPoint>();
+        newVertex.GetComponent<VertexPoint>().Index = _verticesList.Count;
         newVertex.SetParent(transform);
         return newVertex;
     }
