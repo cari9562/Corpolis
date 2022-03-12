@@ -6,6 +6,8 @@ public class EventsManager : MonoBehaviour
 {
     public static EventsManager Instance;
 
+    private List<ICustomEventsListener> customEvents = new List<ICustomEventsListener>();
+
     private void Awake()
     {
         if (Instance == null)
@@ -18,8 +20,27 @@ public class EventsManager : MonoBehaviour
         }
     }
 
+    public void Register(ICustomEventsListener evt)
+    {
+        if (!customEvents.Contains(evt))
+        {
+            customEvents.Add(evt);
+        }
+    }
+
+    public void Deregister(ICustomEventsListener evt)
+    {
+        if (customEvents.Contains(evt))
+        {
+            customEvents.Remove(evt);
+        }
+    }
+
     public void PropagateEvent(CustomEvent evt, ICustomEventsListener eventsListener)
     {
-        eventsListener.OnEvent(evt);
+        foreach (ICustomEventsListener customEvent in customEvents)
+        {
+            customEvent.OnEvent(evt);
+        }
     }
 }

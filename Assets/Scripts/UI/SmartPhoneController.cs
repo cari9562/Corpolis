@@ -7,7 +7,18 @@ public class SmartPhoneController : MonoBehaviour, ICustomEventsListener
     // Start is called before the first frame update
     private void Start()
     {
-        EventsManager.Instance.PropagateEvent(new SmartPhoneControllerEvent { Id = 2, Content = "new phone message!" }, this);
+        EventsManager.Instance.PropagateEvent(new TVControllerEvent { Id = 1, Name = "tv news!" }, this);
+
+    }
+
+    private void OnEnable()
+    {
+        EventsManager.Instance.Register(this);
+    }
+
+    private void OnDisable()
+    {
+        EventsManager.Instance.Deregister(this);
     }
 
     public void OnEvent(CustomEvent evt)
