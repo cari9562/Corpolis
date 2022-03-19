@@ -22,7 +22,7 @@ public class CanvasGroupFader : MonoBehaviour
     {
         if (_isFadeOutStart)
         {
-            FadeOut(3);
+            FadeOut(0.1f);
         }
     }
 
@@ -46,17 +46,7 @@ public class CanvasGroupFader : MonoBehaviour
     {
         if (!_isFadeStart) yield break;
 
-        if (_nonInteractableOnFadeOut)
-        {
-            if (isFadeIn)
-            {
-                _canvasGroup.interactable = true;
-            }
-            else
-            {
-                _canvasGroup.interactable = false;
-            }
-        }
+        CheckInteractableCondition(isFadeIn);
 
         while (_timeSpent < duration)
         {
@@ -80,6 +70,21 @@ public class CanvasGroupFader : MonoBehaviour
         }
 
         _isFadeStart = false;
+    }
+
+    private void CheckInteractableCondition(bool isFadeIn)
+    {
+        if (_nonInteractableOnFadeOut)
+        {
+            if (isFadeIn)
+            {
+                _canvasGroup.interactable = true;
+            }
+            else
+            {
+                _canvasGroup.interactable = false;
+            }
+        }
     }
 
     private void Update()
