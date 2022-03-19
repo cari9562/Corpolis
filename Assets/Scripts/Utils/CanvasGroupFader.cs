@@ -22,7 +22,7 @@ public class CanvasGroupFader : MonoBehaviour
     {
         if (_isFadeOutStart)
         {
-            FadeOut(0.1f);
+            _canvasGroup.alpha = 0;
         }
     }
 
